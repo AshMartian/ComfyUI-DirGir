@@ -37,7 +37,11 @@ A simple workflow using both nodes
 - current_index connected to `LoadImagesFromPath`
 - As the queue is prompted, new images load
 - As the queue goes beyond the file_count, loop_index is reset automatically.
-  ![Loopy Demo](docs/Loopy_Demo.gif)
+
+![Loopy Demo](docs/Loopy_Demo.gif)
+
+Regex Usage
+![Loopy Regex Demo](docs/Loopy_Regex_Demo.gif)
 
 ![Muffin](docs/GIR_muffin.webp)
 
