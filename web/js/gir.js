@@ -114,6 +114,7 @@ app.registerExtension({
         previewElement.computeSize = function() {
           return [200, 50];
         }
+        node.widgets.filter(w => w.name === "Selected Directory").forEach(w => w.value = "");
         // Add a button widget to the node that opens a directory selection dialog
         node.addWidget("button", "Select Directory", null, function(widget) {
           getDirectoryPath(node.id).then(directory => {
