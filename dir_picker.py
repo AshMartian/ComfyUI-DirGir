@@ -4,19 +4,21 @@ import tkinter as tk
 import json
 from tkinter import filedialog
 import server
-
+import os
 
 picked_dirs = {}
 
+current_path = os.path.abspath(os.path.dirname(__file__))
+
 
 def save_picked_dirs():
-    with open('custom_nodes/ComfyUI-DirGir/picked_dirs.json', 'w') as f:
+    with open(os.path.join(current_path, 'picked_dirs.json'), 'w') as f:
         f.write(json.dumps(picked_dirs))
 
 
 def load_picked_dirs():
     try:
-        with open('custom_nodes/ComfyUI-DirGir/picked_dirs.json', 'r') as f:
+        with open(os.path.join(current_path, 'picked_dirs.json'), 'r') as f:
             picked_dirs.update(json.loads(f.read()))
     except FileNotFoundError:
         pass
