@@ -68,6 +68,10 @@ class LoopyDir:
 
         print(f"Loop index: {loop_index}, cls index: {cls.file_index}")
 
+        if cls.file_index >= len(cls.matched_files):
+            cls.file_index = 0
+            loop_indexes[id] = 0
+
         # Serve the next file in the list
         current_file = cls.matched_files[cls.file_index]
 
