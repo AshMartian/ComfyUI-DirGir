@@ -1,6 +1,6 @@
 # ComfyUI Directory GIR (Get It Right)
 
-Utility nodes to get directories right in ComfyUI
+Utility nodes to get directories right in ComfyUI. Ever want to select a random directory and loop bulk queue more than the number of files available automatically reverting to 0 index after they were all done? So did I!
 
 ![Scoot](docs/GIR_scoot.gif)
 
@@ -27,7 +27,7 @@ Then restart ComfyUI
 
 ## Examples
 
-Get It Right Directory Picker (Tested on MacOS and Windows)
+Get It Right Directory Picker (Tested on MacOS\*\* and Windows)
 ![Picker Demo](docs/PickerDemo.gif)
 
 A simple workflow using both nodes
@@ -46,3 +46,4 @@ Regex Usage
 ![Muffin](docs/GIR_muffin.webp)
 
 \*GIR Happy dance is not a real node, open an Issue to request it!
+\*\*MacOS Works great on first directory selection, but on subsequent selections the directory browser is behind web browser. Not an issue on Windows.
