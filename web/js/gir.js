@@ -7,7 +7,7 @@ import { app } from '../../../scripts/app.js';
 
 function getDirectoryPath(node_id) {
   return new Promise((resolve, reject) => {
-  api.fetchApi('/select-directory?id=' + node_id)
+  api.fetchApi('/gir-dir/select-directory?id=' + node_id)
     .then(response => {
         if (!response.ok) {
             throw new Error('Network response was not ok');
@@ -25,7 +25,7 @@ function getDirectoryPath(node_id) {
 
 function getCurrentDirectory(node_id) {
   return new Promise((resolve, reject) => {
-  api.fetchApi('/get-directory?id=' + node_id)
+  api.fetchApi('/gir-dir/get-directory?id=' + node_id)
     .then(response => {
         if (!response.ok) {
             throw new Error('Network response was not ok');
@@ -44,7 +44,7 @@ function getCurrentDirectory(node_id) {
 
 function setDirectoryPath(node_id, directory) {
   return new Promise((resolve, reject) => {
-  api.fetchApi('/set-directory?id=' + node_id + '&directory=' + directory)
+  api.fetchApi('/gir-dir/set-directory?id=' + node_id + '&directory=' + directory)
     .then(response => {
         if (!response.ok) {
             throw new Error('Network response was not ok');
@@ -56,6 +56,25 @@ function setDirectoryPath(node_id, directory) {
     })
     .catch(error => {
         console.error('Error setting directory:', error);
+    });
+  });
+}
+
+function getLoopIndex(node_id) {
+  return new Promise((resolve, reject) => {
+  api.fetchApi('/gir-dir/loop-index?id=' + node_id)
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        resolve(data.loop_index);
+    })
+    .catch(error => {
+        console.error('Error setting directory:', error);
+        reject(error);
     });
   });
 }
@@ -119,6 +138,31 @@ app.registerExtension({
           }
         });
 
+      }
+    }
+  },
+});
+
+app.registerExtension({
+  name: "DirGir.Looper",
+  category: "Dir Gir",
+  async beforeRegisterNodeDef (nodeType, nodeData, app) {
+    if (nodeType.comfyClass == 'Dir_Gir_Looper') {
+      const orig_nodeCreated = nodeType.prototype.onNodeCreated
+      nodeType.prototype.onNodeCreated = async function () {
+        await orig_nodeCreated?.apply(this, arguments)
+
+        const node = this;
+
+        getLoopIndex(node.id).then(loop_index => {
+          node.widgets.find(w => w.name === 'loop_index').value = loop_index;
+        });
+
+        api.addEventListener('executed', async () => {
+          getLoopIndex(node.id).then(loop_index => {
+            node.widgets.find(w => w.name === 'loop_index').value = loop_index;
+          });
+        });
       }
     }
   },

@@ -1,6 +1,7 @@
 # __init__.py
 
 from .dir_picker import DirPicker
+from .dir_loop import LoopyDir
 import importlib.util
 
 
@@ -27,10 +28,12 @@ WEB_DIRECTORY = "./web"
 
 NODE_CLASS_MAPPINGS = {
     "Dir_Gir_Picker": DirPicker,
+    "Dir_Gir_Looper": LoopyDir,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
     "Dir_Gir_Picker": "GIR Dir Picker",
+    "Dir_Gir_Looper": "GIR Loopy Dir",
 }
 
 __all__ = ['NODE_CLASS_MAPPINGS', 'NODE_DISPLAY_NAME_MAPPINGS']

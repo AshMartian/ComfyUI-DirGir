@@ -73,19 +73,19 @@ class DirPicker:
         return folder_path or defaultPath
 
 
-@server.PromptServer.instance.routes.get("/select-directory")
+@server.PromptServer.instance.routes.get("/gir-dir/select-directory")
 async def select_folder_route(request):
     load_picked_dirs()
     return await DirPicker.select_directory(request)
 
 
-@server.PromptServer.instance.routes.get("/get-directory")
+@server.PromptServer.instance.routes.get("/gir-dir/get-directory")
 async def get_last_selected_directory(request):
     load_picked_dirs()
     return web.json_response({'selected_folder': picked_dirs.get(request.rel_url.query.get('id', ''))})
 
 
-@server.PromptServer.instance.routes.get("/set-directory")
+@server.PromptServer.instance.routes.get("/gir-dir/set-directory")
 async def set_last_selected_directory(request):
     picked_dirs[request.rel_url.query.get(
         'id', '')] = request.rel_url.query.get('directory', '')
