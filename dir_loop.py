@@ -42,8 +42,10 @@ class LoopyDir:
             }
         }
 
-    RETURN_TYPES = ("INT", "INT", "STRING")  # Outputs the index and filename
-    RETURN_NAMES = ("file_count", "current_index", "current_file")
+    # Outputs the index and filename
+    RETURN_TYPES = ("INT", "INT", "STRING", "STRING", "COMBO")
+    RETURN_NAMES = ("file_count", "current_index",
+                    "current_file", "current_file_path", "all_files")
 
     OUTPUT_NODE = True
 
@@ -59,7 +61,7 @@ class LoopyDir:
             cls.file_index = 0
             loop_indexes[id] = 0
             print("No files found in directory" + directory)
-            return (0, 0, "")
+            return (0, 0, "", "", [])
 
         # If the loop index is not the same as the cls index + 1, set the cls index to the loop index
         if loop_index != cls.file_index + 1 and loop_index < len(cls.matched_files):
@@ -74,7 +76,8 @@ class LoopyDir:
         current_file = cls.matched_files[cls.file_index]
 
         # Prepare outputs
-        output = (len(cls.matched_files), cls.file_index, current_file)
+        output = (len(cls.matched_files), cls.file_index,
+                  current_file, os.path.join(directory, current_file), cls.matched_files)
 
         # Increment index or reset if at the end
         cls.file_index = (cls.file_index + 1) % len(cls.matched_files)
