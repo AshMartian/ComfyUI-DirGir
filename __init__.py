@@ -2,6 +2,7 @@
 
 from .dir_picker import DirPicker
 from .dir_loop import LoopyDir
+from .image_nabber import ImageNabber
 import importlib.util
 
 
@@ -29,11 +30,13 @@ WEB_DIRECTORY = "./web"
 NODE_CLASS_MAPPINGS = {
     "Dir_Gir_Picker": DirPicker,
     "Dir_Gir_Looper": LoopyDir,
+    "Gir_Image_Nabber": ImageNabber,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
     "Dir_Gir_Picker": "GIR Dir Picker",
     "Dir_Gir_Looper": "GIR Loopy Dir",
+    "Gir_Image_Nabber": "GIR Image (Path) Nabber",
 }
 
 __all__ = ['NODE_CLASS_MAPPINGS', 'NODE_DISPLAY_NAME_MAPPINGS']

@@ -35,6 +35,9 @@ class DirPicker:
             }
         }
 
+    def __init__(self):
+        load_picked_dirs()
+
     RETURN_TYPES = ("STRING",)
     RETURN_NAMES = ("directory",)
     OUTPUT_IS_LIST = (False,)

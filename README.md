@@ -9,6 +9,7 @@ Utility nodes to get directories right in ComfyUI. Ever want to select a random 
 Tkinker is required, launching this custom node will attempt to install automatically. If this fails, the Directory Picker will not work properly. See [TKinker Installation](https://tkdocs.com/tutorial/install.html)
 
 #### Comfy Manager
+
 Search `Dirgir` in Comfy Manager!
 ![Manager Search](docs/ComfyManager.png)
 
@@ -27,6 +28,7 @@ Then restart ComfyUI
 | :-------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | GIR Directory Picker![GIR Directory Picker](docs/DirectoryPicker.png) | **"Select Directory"** opens a GUI file browser using `tkinker`, the selected directory is persistent on disk (server restarts are no problem!), and available via output string. Changing the Selected Directory manually is supported too.                                                                                                                                              |
 |         GIR Loopy Dir![GIR Loopy Dir](docs/DirectoryLoop.png)         | Directory in, automatic loopy-ness out. Auto-increment and auto resetting, when the `loop_index` reaches the end of filtered files in directory, goes back to zero. Filter by extension or regex, manually change `loop_index` to override!                                                                                                                                               |
+|      GIR Image Nabber ![GIR Image Nabber](docs/ImageNabber.png)       | A simple path to image node, for working with results of Loopy Dir without relying on an external node pack that has it's own directory filtering logic *(For videos, use [VHS Load Video (Path)](https://github.com/Kosinkadink/ComfyUI-VideoHelperSuite/blob/main/videohelpersuite/load_video_nodes.py#L197)*)                                                                                                                                                                                                                                   |
 |        GIR Happy Dance!\* ![Let's Dance!](docs/GIR_Dance.gif)         | These nodes simplify and streamline the process of directory selection and iteration, making complex tasks feel like a breeze. With the ability to effortlessly pick directories and loop through files with smart reset capabilities, GIR is over the moon, knowing users can focus on creativity and productivity, leaving the tedious parts to the automation magic of ComfyUI DirGir. |
 
 ## Examples
@@ -45,9 +47,12 @@ A simple workflow using both nodes
 ![Loopy Demo](docs/Loopy_Demo.gif)
 
 Regex Usage
+- The problem with using `LoadImagesFromPath` is it's own built in directory filtering and index logic. DIR Loopy Dir will output filtered indexes that don't always align (especially with regex).
+- Using `GIT Image Nabber` we can reliably load images from a direct path.
 ![Loopy Regex Demo](docs/Loopy_Regex_Demo.gif)
 
 ![Muffin](docs/GIR_muffin.webp)
 
 \*GIR Happy dance is not a real node, open an Issue to request it!
+
 \*\*MacOS Works great on first directory selection, but on subsequent selections the directory browser is behind web browser. Not an issue on Windows.
