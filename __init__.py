@@ -26,11 +26,11 @@ install_tkinter()
 WEB_DIRECTORY = "./web"
 
 NODE_CLASS_MAPPINGS = {
-    "Dir_Gir_DirPicker": DirPicker,
+    "Dir_Gir_Picker": DirPicker,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "Dir_Gir_DirPicker": "GIR Directory Picker",
+    "Dir_Gir_Picker": "GIR Dir Picker",
 }
 
 __all__ = ['NODE_CLASS_MAPPINGS', 'NODE_DISPLAY_NAME_MAPPINGS']

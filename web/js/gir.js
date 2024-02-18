@@ -15,9 +15,7 @@ function getDirectoryPath(node_id) {
         return response.json();
     })
     .then(data => {
-        console.log('Directory set successfully:', data);
         resolve(data.selected_folder);
-        // Here you can use `data` to update the node or UI as needed
     })
     .catch(error => {
         console.error('Error setting directory:', error);
@@ -35,9 +33,7 @@ function getCurrentDirectory(node_id) {
         return response.json();
     })
     .then(data => {
-        console.log('Directory got successfully:', data);
         resolve(data.selected_folder);
-        // Here you can use `data` to update the node or UI as needed
     })
     .catch(error => {
         console.error('Error setting directory:', error);
@@ -56,9 +52,7 @@ function setDirectoryPath(node_id, directory) {
         return response.json();
     })
     .then(data => {
-        console.log('Directory set successfully:', data);
         resolve(data.status);
-        // Here you can use `data` to update the node or UI as needed
     })
     .catch(error => {
         console.error('Error setting directory:', error);
@@ -67,59 +61,65 @@ function setDirectoryPath(node_id, directory) {
 }
 
 app.registerExtension({
-  name: "DirGir.DirPicker",
-  category: "Dir Gir",
+  name: "DirGir.Picker",
+  category: "Dir GIR",
   inputs: [{name: "Selected Directory", type: "string"}],
   outputs: [{name: "directory", type: "string"}],
-  loadedGraphNode: function(node) {
-    console.log(node.comfyClass, node)
-    if(node.comfyClass === "Dir_Gir_DirPicker") {
-      var element = document.createElement("div");
-      // Set height to 20px
-      element.style.textOverflow = "ellipsis";
-      element.style.fontSize = "12px";
-      element.style.overflow = "hidden";
-      element.style.whiteSpace = "break-word";
-      element.style.width = "100%";
-      element.style.fontFamily = "Arial, sans-serif";
-      element.innerHTML = "No directory selected";
+  async beforeRegisterNodeDef (nodeType, nodeData, app) {
+    if (nodeType.comfyClass == 'Dir_Gir_Picker') {
+      const orig_nodeCreated = nodeType.prototype.onNodeCreated
+      nodeType.prototype.onNodeCreated = async function () {
+        await orig_nodeCreated?.apply(this, arguments)
 
-      const previewElement = node.addDOMWidget("directorypreview", "preview", element, {
-        serialize: false,
-        hideOnZoom: false,
-        getValue() {
-            return element.innerHTML;
-        },
-        setValue(v) {
-            element.innerHTML = v;
-        },
-      });
-      previewElement.computeSize = function() {
-        return [200, 50];
-      }
-      // Add a button widget to the node that opens a directory selection dialog
-      node.addWidget("button", "Select Directory", null, function(widget) {
-        getDirectoryPath(node.id).then(directory => {
-          // Add a text element to the node that displays the selected directory
-          element.innerHTML = directory;
-          node.setOutputData("directory", directory);
-          node.onResize?.(node.size);
-          node.widgets.filter(w => w.name === "Selected Directory").forEach(w => w.value = directory);
+        const node = this;
+
+        var element = document.createElement("div");
+        element.style.textOverflow = "ellipsis";
+        element.style.fontSize = "12px";
+        element.style.overflow = "hidden";
+        element.style.whiteSpace = "break-word";
+        element.style.width = "100%";
+        element.style.fontFamily = "Arial, sans-serif";
+        element.innerHTML = "No directory selected";
+  
+        const previewElement = node.addDOMWidget("directorypreview", "preview", element, {
+          serialize: false,
+          hideOnZoom: false,
+          getValue() {
+              return element.innerHTML;
+          },
+          setValue(v) {
+              element.innerHTML = v;
+          },
         });
-      });
-
-      node.addWidget("text", "Selected Directory", "", function(widget) {
-        setDirectoryPath(node.id, widget);
-        element.innerHTML = widget;
-      });
-
-      getCurrentDirectory(node.id).then(directory => {
-        if (directory) {
-          element.innerHTML = directory;
-          node.setOutputData("directory", directory);
-          node.widgets.filter(w => w.name === "Selected Directory").forEach(w => w.value = directory);
+        previewElement.computeSize = function() {
+          return [200, 50];
         }
-      });
+        // Add a button widget to the node that opens a directory selection dialog
+        node.addWidget("button", "Select Directory", null, function(widget) {
+          getDirectoryPath(node.id).then(directory => {
+            // Add a text element to the node that displays the selected directory
+            element.innerHTML = directory;
+            node.setOutputData("directory", directory);
+            node.onResize?.(node.size);
+            node.widgets.filter(w => w.name === "Selected Directory").forEach(w => w.value = directory);
+          });
+        });
+  
+        node.addWidget("text", "Selected Directory", "", function(widget) {
+          setDirectoryPath(node.id, widget);
+          element.innerHTML = widget;
+        });
+  
+        getCurrentDirectory(node.id).then(directory => {
+          if (directory) {
+            element.innerHTML = directory;
+            node.setOutputData("directory", directory);
+            node.widgets.filter(w => w.name === "Selected Directory").forEach(w => w.value = directory);
+          }
+        });
+
+      }
     }
-  }
+  },
 });

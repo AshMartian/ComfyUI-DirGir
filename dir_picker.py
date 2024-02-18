@@ -45,8 +45,6 @@ class DirPicker:
     CATEGORY = "Dir Gir"
 
     def get_last_selected_directory(cls, prompt, id):
-        print("Last selected directory:", picked_dirs.get(
-            id), "for node", id, "with prompt", prompt)
         return (picked_dirs.get(id), )
 
     @classmethod
