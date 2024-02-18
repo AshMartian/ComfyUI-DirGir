@@ -11,7 +11,7 @@ def install_tkinter():
         importlib.import_module('tkinter')
     except ImportError:
         import pip
-        pip.main(['install', 'tkinter'])
+        pip.main(['install', 'tk'])
         # If macOS, attempt to install via brew
         import platform
         if platform.system() == 'Darwin':
