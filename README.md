@@ -8,7 +8,11 @@ Utility nodes to get directories right in ComfyUI. Ever want to select a random 
 
 Tkinker is required, launching this custom node will attempt to install automatically. If this fails, the Directory Picker will not work properly. See [TKinker Installation](https://tkdocs.com/tutorial/install.html)
 
-Manual installation:
+#### Comfy Manager
+Search `Dirgir` in Comfy Manager!
+![Manager Search](docs/ComfyManager.png)
+
+#### Manual installation:
 
 ```bash
 cd Your_ComfyUI_Path/custom_nodes
