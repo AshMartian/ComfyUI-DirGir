@@ -79,25 +79,6 @@ function getLoopIndex(node_id) {
   });
 }
 
-function queueLoopIndex(node_id) {
-  return new Promise((resolve, reject) => {
-  api.fetchApi('/gir-dir/queue-loop-index?id=' + node_id)
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
-    })
-    .then(data => {
-        resolve(data.loop_index);
-    })
-    .catch(error => {
-        console.error('Error triggering queue loop:', error);
-        reject(error);
-    });
-  });
-}
-
 app.registerExtension({
   name: "DirGir.Picker",
   category: "Dir GIR",
@@ -175,23 +156,20 @@ app.registerExtension({
         const node = this;
 
         getLoopIndex(node.id).then(loop_index => {
-          node.widgets.find(w => w.name === 'loop_index').value = loop_index;
+          const loopIndexWidget = node.widgets.find(w => w.name === 'loop_index');
+          if (loopIndexWidget) {
+            loopIndexWidget.value = loop_index;
+            loopIndexWidget.afterQueued = () => {
+              loopIndexWidget.value += 1;
+            }
+          }
         });
 
-        let lastQueueRemaining = 0;
-        api.addEventListener('status', async (status) => {
-          if (status.detail.exec_info.queue_remaining === 0) {
-            getLoopIndex(node.id).then(loop_index => {
-              node.widgets.find(w => w.name === 'loop_index').value = loop_index;
-            });
-          } else if (status.detail.exec_info.queue_remaining !== lastQueueRemaining) {
-            // Trigger a queue loop index
-            queueLoopIndex(node.id).then(loop_index => {
-              node.widgets.find(w => w.name === 'loop_index').value = loop_index;
-            });
-          }
-          lastQueueRemaining = status.detail.exec_info.queue_remaining;
-        });
+        api.addEventListener('executing', () => {
+          node.widgets.find(w => w.name === 'loop_index').value += 1;
+          node.onResize?.(node.size);
+          node.widgets.find(w => w.name === 'loop_index').value -= 1;
+        })
         api.addEventListener('executed', async (status) => {
           getLoopIndex(node.id).then(loop_index => {
             node.widgets.find(w => w.name === 'loop_index').value = loop_index;

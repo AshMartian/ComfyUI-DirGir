@@ -58,30 +58,26 @@ class LoopyDir:
 
         if len(cls.matched_files) == 0:
             # No files found, reset index
-            cls.file_index = 0
             loop_indexes[id] = 0
             print("No files found in directory" + directory)
             return (0, 0, "", "", [])
 
-        # If the loop index is not the same as the cls index + 1, set the cls index to the loop index
-        if loop_index != cls.file_index + 1 and loop_index < len(cls.matched_files):
-            cls.file_index = loop_index
-            loop_indexes[id] = cls.file_index
+        # Ensure loop_index is within bounds
+        loop_index = loop_indexes.get(id, 0)
 
-        if cls.file_index >= len(cls.matched_files):
-            cls.file_index = 0
+        if loop_index >= len(cls.matched_files):
+            # If the external loop index is beyond the available files, reset to 0
             loop_indexes[id] = 0
 
-        # Serve the next file in the list
-        current_file = cls.matched_files[cls.file_index]
+        # Serve the file at the current loop index
+        current_file = cls.matched_files[loop_index]
 
         # Prepare outputs
-        output = (len(cls.matched_files), cls.file_index,
-                  current_file, os.path.join(directory, current_file), cls.matched_files)
+        output = (len(cls.matched_files), loop_index, current_file,
+                  os.path.join(directory, current_file), cls.matched_files)
 
-        # Increment index or reset if at the end
-        cls.file_index = (cls.file_index + 1) % len(cls.matched_files)
-        loop_indexes[id] = cls.file_index
+        # Increment the external loop index or reset if at the end
+        loop_indexes[id] = (loop_index + 1) % len(cls.matched_files)
 
         return output
 
@@ -89,9 +85,3 @@ class LoopyDir:
 @server.PromptServer.instance.routes.get("/gir-dir/loop-index")
 async def get_last_index(request):
     return web.json_response({'loop_index': loop_indexes.get(request.rel_url.query.get('id', '')) or 0})
-
-
-@server.PromptServer.instance.routes.get("/gir-dir/loop-queue")
-async def get_loop_queue(request):
-    loop_indexes[request.rel_url.query.get('id', '')] += 1
-    return web.json_response({'loop_queue': loop_indexes.get(request.rel_url.query.get('id', '')) or 0})
