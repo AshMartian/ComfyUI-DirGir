@@ -89,3 +89,9 @@ class LoopyDir:
 @server.PromptServer.instance.routes.get("/gir-dir/loop-index")
 async def get_last_index(request):
     return web.json_response({'loop_index': loop_indexes.get(request.rel_url.query.get('id', '')) or 0})
+
+
+@server.PromptServer.instance.routes.get("/gir-dir/loop-queue")
+async def get_loop_queue(request):
+    loop_indexes[request.rel_url.query.get('id', '')] += 1
+    return web.json_response({'loop_queue': loop_indexes.get(request.rel_url.query.get('id', '')) or 0})

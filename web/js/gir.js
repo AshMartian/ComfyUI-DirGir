@@ -18,7 +18,7 @@ function getDirectoryPath(node_id) {
         resolve(data.selected_folder);
     })
     .catch(error => {
-        console.error('Error setting directory:', error);
+        console.error('Error selecting directory:', error);
     });
   });
 }
@@ -36,7 +36,7 @@ function getCurrentDirectory(node_id) {
         resolve(data.selected_folder);
     })
     .catch(error => {
-        console.error('Error setting directory:', error);
+        console.error('Error getting directory:', error);
         reject(error);
     });
   });
@@ -73,7 +73,26 @@ function getLoopIndex(node_id) {
         resolve(data.loop_index);
     })
     .catch(error => {
-        console.error('Error setting directory:', error);
+        console.error('Error getting loop index:', error);
+        reject(error);
+    });
+  });
+}
+
+function queueLoopIndex(node_id) {
+  return new Promise((resolve, reject) => {
+  api.fetchApi('/gir-dir/queue-loop-index?id=' + node_id)
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        resolve(data.loop_index);
+    })
+    .catch(error => {
+        console.error('Error triggering queue loop:', error);
         reject(error);
     });
   });
@@ -159,7 +178,21 @@ app.registerExtension({
           node.widgets.find(w => w.name === 'loop_index').value = loop_index;
         });
 
-        api.addEventListener('executed', async () => {
+        let lastQueueRemaining = 0;
+        api.addEventListener('status', async (status) => {
+          if (status.detail.exec_info.queue_remaining === 0) {
+            getLoopIndex(node.id).then(loop_index => {
+              node.widgets.find(w => w.name === 'loop_index').value = loop_index;
+            });
+          } else if (status.detail.exec_info.queue_remaining !== lastQueueRemaining) {
+            // Trigger a queue loop index
+            queueLoopIndex(node.id).then(loop_index => {
+              node.widgets.find(w => w.name === 'loop_index').value = loop_index;
+            });
+          }
+          lastQueueRemaining = status.detail.exec_info.queue_remaining;
+        });
+        api.addEventListener('executed', async (status) => {
           getLoopIndex(node.id).then(loop_index => {
             node.widgets.find(w => w.name === 'loop_index').value = loop_index;
           });
