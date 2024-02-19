@@ -4,7 +4,7 @@ Utility nodes to get directories right in ComfyUI. Ever want to select a random 
 
 ![Scoot](docs/GIR_scoot.gif)
 
-To create this custom node pack, I uploaded the sparse ComfyUI documentation and js source code to an OpenAi GPTs [ComfyUI Craftsman](https://chat.openai.com/g/g-pYtHuQdGh-comfyui-craftsman]), this GPTs is good at answering questions and offering guidance based on real ComfyUI implementations.
+To create this custom node pack, I uploaded the sparse ComfyUI documentation, a few custom node sources, and app js source code to an OpenAi GPTs [ComfyUI Craftsman](https://chat.openai.com/g/g-pYtHuQdGh-comfyui-craftsman]), this GPTs is good at answering questions and offering guidance based on real ComfyUI implementations.
 
 ## Installation
 
@@ -50,9 +50,10 @@ A simple workflow using both nodes
 
 Regex Usage
 
-- The problem with using `LoadImagesFromPath` is it's own built in directory filtering and index logic. DIR Loopy Dir will output filtered indexes that don't always align (especially with regex).
-- Using `GIT Image Nabber` we can reliably load images from a direct path.
-  ![Loopy Regex Demo](docs/Loopy_Regex_Demo.gif)
+- The problem with using `LoadImagesFromPath` is it's own built in directory filtering and index logic. GIR Loopy Dir will output filtered indexes that don't always align (especially with regex).
+- Using `GIR Image Nabber` we can reliably load images from a direct path.
+
+![Loopy Regex Demo](docs/Loopy_Regex_Demo.gif)
 
 ![Muffin](docs/GIR_muffin.webp)
 
