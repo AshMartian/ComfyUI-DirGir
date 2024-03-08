@@ -22,6 +22,13 @@ def install_tkinter():
                     subprocess.run(['brew', 'install', 'python-tk'])
                 except FileNotFoundError:
                     pass
+            # If Linux, attempt to install via apt
+            elif platform.system() == 'Linux':
+                try:
+                    import subprocess
+                    subprocess.run(['apt', 'install', 'python3-tk'])
+                except FileNotFoundError:
+                    pass
         except:
             print("Could not install tkinter")
 
