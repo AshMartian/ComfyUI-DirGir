@@ -11,16 +11,19 @@ def install_tkinter():
     try:
         importlib.import_module('tkinter')
     except ImportError:
-        import pip
-        pip.main(['install', 'tk'])
-        # If macOS, attempt to install via brew
-        import platform
-        if platform.system() == 'Darwin':
-            try:
-                import subprocess
-                subprocess.run(['brew', 'install', 'python-tk'])
-            except FileNotFoundError:
-                pass
+        try:
+            import pip
+            pip.main(['install', 'tk'])
+            # If macOS, attempt to install via brew
+            import platform
+            if platform.system() == 'Darwin':
+                try:
+                    import subprocess
+                    subprocess.run(['brew', 'install', 'python-tk'])
+                except FileNotFoundError:
+                    pass
+        except:
+            print("Could not install tkinter")
 
 
 install_tkinter()
