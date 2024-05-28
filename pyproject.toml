@@ -10,6 +10,6 @@ Repository = "https://github.com/AshMartian/ComfyUI-DirGir"
 #  Used by Comfy Registry https://comfyregistry.org
 
 [tool.comfy]
-PublisherId = ""
+PublisherId = "ashmartian"
 DisplayName = "ComfyUI-DirGir"
 Icon = ""
