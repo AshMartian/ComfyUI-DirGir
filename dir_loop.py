@@ -3,6 +3,7 @@ from aiohttp import web
 import os
 import re
 import server
+import random
 
 # Utility function for filtering files
 
@@ -18,6 +19,8 @@ def filter_files(directory, filter_type, filter_value, sort_by="name", sort_orde
         files.sort(key=lambda x: os.path.getctime(os.path.join(directory, x)))
     if sort_order == "desc":
         files.reverse()
+    if sort_order == "random":
+        random.shuffle(files)
 
     for file in files:
         if filter_type == "regex" and re.match(filter_value, file):
@@ -47,7 +50,7 @@ class LoopyDir:
                 # Dropdown for sorting by name or date (modified/created)
                 "sort_by": (["name", "date_modified", "date_created"], {"default": "name"}),
                 # Dropdown for ascending or descending
-                "sort_order": (["asc", "desc"], {"default": "asc"}),
+                "sort_order": (["asc", "desc", "random"], {"default": "asc"}),
                 # External loop index
                 "loop_index": ("INT", {"default": 0}),
             },
