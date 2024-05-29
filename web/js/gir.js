@@ -101,8 +101,6 @@ function setLoopIndex(node_id, loop_index) {
   });
 }
 
-console.log(api)
-
 app.registerExtension({
   name: "DirGir.Picker",
   category: "Dir GIR",
@@ -192,9 +190,7 @@ app.registerExtension({
             loopIndexWidget.afterQueued = () => {
               loopIndexWidget.value += 1;
             }
-            console.log(loopIndexWidget)
             loopIndexWidget.callback = async function() {
-              console.log(loopIndexWidget.value)
               await setLoopIndex(node.id, loopIndexWidget.value);
             }
           }
