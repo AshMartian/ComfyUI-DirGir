@@ -4,7 +4,7 @@ Utility nodes to get directories right in ComfyUI. Ever want to select a random 
 
 ![Scoot](docs/GIR_scoot.gif)
 
-To create this custom node pack, I uploaded the sparse ComfyUI documentation, a few custom node sources, and app js source code to an OpenAi GPTs [ComfyUI Craftsman](https://chat.openai.com/g/g-pYtHuQdGh-comfyui-craftsman]), this GPTs is good at answering questions and offering guidance based on real ComfyUI implementations.
+To create this custom node pack, I uploaded the sparse ComfyUI documentation, a few custom node sources, and app js source code to an OpenAi GPTs [ComfyUI Craftsman](https://chat.openai.com/g/g-pYtHuQdGh-comfyui-craftsman), this GPTs is good at answering questions and offering guidance based on real ComfyUI implementations.
 
 ## Installation
 
