@@ -34,7 +34,7 @@ function getCurrentDirectory(node_id) {
         return response.json();
     })
     .then(data => {
-        if(data.hasTk) {
+        if(data.hasTK) {
           hasTk = true;
         }
         resolve(data.selected_folder);
