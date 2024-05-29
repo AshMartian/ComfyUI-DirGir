@@ -125,8 +125,7 @@ app.registerExtension({
             // Add a text element to the node that displays the selected directory
             element.innerHTML = directory;
             if(!hasTk) {
-              console.log('Tkinter not installed');
-              console.log(widget)
+              console.error('Tkinter not installed');
             }
             node.setOutputData("directory", directory);
             node.onResize?.(node.size);
@@ -145,7 +144,6 @@ app.registerExtension({
             node.setOutputData("directory", directory);
             node.widgets.filter(w => w.name === "Selected Directory").forEach(w => w.value = directory);
             if (!hasTk) {
-              console.log('Tkinter not installed');
               node.widgets.filter(w => w.name === "Select Directory").forEach(w => w.disabled = true)
             }
           }
