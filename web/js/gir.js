@@ -4,6 +4,7 @@ import { api } from '../../../scripts/api.js';
 import { app } from '../../../scripts/app.js';
 
 // console.log(app);
+let hasTk = false;
 
 function getDirectoryPath(node_id) {
   return new Promise((resolve, reject) => {
@@ -33,6 +34,9 @@ function getCurrentDirectory(node_id) {
         return response.json();
     })
     .then(data => {
+        if(data.hasTK) {
+          hasTk = true;
+        }
         resolve(data.selected_folder);
     })
     .catch(error => {
@@ -120,6 +124,9 @@ app.registerExtension({
           getDirectoryPath(node.id).then(directory => {
             // Add a text element to the node that displays the selected directory
             element.innerHTML = directory;
+            if(!hasTk) {
+              console.error('Tkinter not installed');
+            }
             node.setOutputData("directory", directory);
             node.onResize?.(node.size);
             node.widgets.filter(w => w.name === "Selected Directory").forEach(w => w.value = directory);
@@ -136,6 +143,9 @@ app.registerExtension({
             element.innerHTML = directory;
             node.setOutputData("directory", directory);
             node.widgets.filter(w => w.name === "Selected Directory").forEach(w => w.value = directory);
+            if (!hasTk) {
+              node.widgets.filter(w => w.name === "Select Directory").forEach(w => w.disabled = true)
+            }
           }
         });
 

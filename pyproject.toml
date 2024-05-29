@@ -1,7 +1,7 @@
 [project]
 name = "comfyui-dirgir"
 description = "A collection of ComfyUI directory automation utility nodes. Directory Get It Right adds a GUI directory browser, and smart directory loop/iteration node that supports regex and file extension filtering."
-version = "1.0.0"
+version = "1.0.1"
 license = "LICENSE"
 dependencies = ["aiohttp", "tk"]
 
