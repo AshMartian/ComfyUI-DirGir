@@ -83,6 +83,24 @@ function getLoopIndex(node_id) {
   });
 }
 
+function setLoopIndex(node_id, loop_index) {
+  return new Promise((resolve, reject) => {
+  api.fetchApi('/gir-dir/set-loop-index?id=' + node_id + '&index=' + loop_index)
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        resolve(data.status);
+    })
+    .catch(error => {
+        console.error('Error setting loop index:', error);
+    });
+  });
+}
+
 app.registerExtension({
   name: "DirGir.Picker",
   category: "Dir GIR",
@@ -171,6 +189,9 @@ app.registerExtension({
             loopIndexWidget.value = loop_index;
             loopIndexWidget.afterQueued = () => {
               loopIndexWidget.value += 1;
+            }
+            loopIndexWidget.callback = async function() {
+              await setLoopIndex(node.id, loopIndexWidget.value);
             }
           }
         });

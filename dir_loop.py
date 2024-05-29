@@ -7,9 +7,19 @@ import server
 # Utility function for filtering files
 
 
-def filter_files(directory, filter_type, filter_value):
+def filter_files(directory, filter_type, filter_value, sort_by="name", sort_order="asc"):
     matched_files = []
-    for file in os.listdir(directory):
+    files = os.listdir(directory)
+    if sort_by == "name":
+        files.sort()
+    elif sort_by == "date_modified":
+        files.sort(key=lambda x: os.path.getmtime(os.path.join(directory, x)))
+    elif sort_by == "date_created":
+        files.sort(key=lambda x: os.path.getctime(os.path.join(directory, x)))
+    if sort_order == "desc":
+        files.reverse()
+
+    for file in files:
         if filter_type == "regex" and re.match(filter_value, file):
             matched_files.append(file)
         elif filter_type == "extension" and file.endswith(filter_value):
@@ -34,6 +44,11 @@ class LoopyDir:
                 "filter_type": (["regex", "extension"], {"default": "extension"}),
                 # Input for regex pattern or file extension
                 "filter_value": ("STRING", {"default": "", "dynamicPrompts": False}),
+                # Dropdown for sorting by name or date (modified/created)
+                "sort_by": (["name", "date_modified", "date_created"], {"default": "name"}),
+                # Dropdown for ascending or descending
+                "sort_order": (["asc", "desc"], {"default": "asc"}),
+                # External loop index
                 "loop_index": ("INT", {"default": 0}),
             },
             "hidden": {
@@ -52,9 +67,9 @@ class LoopyDir:
     FUNCTION = "iterate_directory"
     CATEGORY = "Dir Gir"
 
-    def iterate_directory(cls, directory, filter_type, filter_value, loop_index, prompt, id):
+    def iterate_directory(cls, directory, filter_type, filter_value, sort_by, sort_order, loop_index, prompt, id):
         # Load or refresh the list of matched files
-        cls.matched_files = filter_files(directory, filter_type, filter_value)
+        cls.matched_files = filter_files(directory, filter_type, filter_value, sort_by, sort_order)
 
         if len(cls.matched_files) == 0:
             # No files found, reset index
@@ -85,3 +100,8 @@ class LoopyDir:
 @server.PromptServer.instance.routes.get("/gir-dir/loop-index")
 async def get_last_index(request):
     return web.json_response({'loop_index': loop_indexes.get(request.rel_url.query.get('id', '')) or 0})
+
+@server.PromptServer.instance.routes.get("/gir-dir/set-loop-index")
+async def set_last_index(request):
+    loop_indexes[request.rel_url.query.get('id', '')] = int(request.rel_url.query.get('index', 0))
+    return web.json_response({'success': True})
