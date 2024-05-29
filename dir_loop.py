@@ -59,7 +59,7 @@ class LoopyDir:
         if len(cls.matched_files) == 0:
             # No files found, reset index
             loop_indexes[id] = 0
-            print("No files found in directory" + directory)
+            print("[ComfyUI-DirGir] No files found in directory" + directory)
             return (0, 0, "", "", [])
 
         # Ensure loop_index is within bounds

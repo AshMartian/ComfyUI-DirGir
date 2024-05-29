@@ -1,10 +1,18 @@
 # dir_picker.py
 from aiohttp import web
-import tkinter as tk
 import json
-from tkinter import filedialog
 import server
 import os
+
+try: 
+    import tkinter as tk
+    from tkinter import filedialog
+    hasTK = True
+except ImportError as e:
+    hasTK = False
+    print("[ComfyUI-DirGir] Could not import filedialog from tkinter, please ensure tkinter is installed (https://www.tutorialspoint.com/how-to-install-tkinter-in-python)")
+    print(e)
+    
 
 picked_dirs = {}
 
@@ -62,17 +70,26 @@ class DirPicker:
     def select_folder(id):
         # This method remains synchronous
         defaultPath = picked_dirs.get(id) or "~"
-        root = tk.Tk()
-        root.withdraw()
-        root.attributes('-topmost', True)
-        root.lift()
-        root.focus_force()
-        folder_path = filedialog.askdirectory(
-            initialdir=defaultPath, title="Select a directory")
-        filedialog.dialogstates = {}  # Clear the dialog state
-        root.quit()
-        root.destroy()
-        print("Selected folder:", folder_path)
+        if hasTK:
+            try:
+                root = tk.Tk()
+                root.withdraw()
+                root.attributes('-topmost', True)
+                root.lift()
+                root.focus_force()
+                folder_path = filedialog.askdirectory(
+                    initialdir=defaultPath, title="Select a directory")
+                filedialog.dialogstates = {}  # Clear the dialog state
+                root.quit()
+                root.destroy()
+                print("[ComfyUI-DirGir] Selected folder:", folder_path)
+            except Exception as e:
+                print("[ComfyUI-DirGir] Could not select folder")
+                print(e)
+                folder_path = None
+        else:
+            folder_path = None
+            print("[ComfyUI-DirGir] Could not import filedialog from tkinter, please ensure tkinter is installed (https://www.tutorialspoint.com/how-to-install-tkinter-in-python)")
         return folder_path or defaultPath
 
 
@@ -85,7 +102,7 @@ async def select_folder_route(request):
 @server.PromptServer.instance.routes.get("/gir-dir/get-directory")
 async def get_last_selected_directory(request):
     load_picked_dirs()
-    return web.json_response({'selected_folder': picked_dirs.get(request.rel_url.query.get('id', ''))})
+    return web.json_response({'selected_folder': picked_dirs.get(request.rel_url.query.get('id', '')), 'hasTK': hasTK})
 
 
 @server.PromptServer.instance.routes.get("/gir-dir/set-directory")

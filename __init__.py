@@ -1,39 +1,39 @@
 # __init__.py
+import importlib.util
+import sys
+
+
+def install_tkinter():
+    try:
+        importlib.import_module('tkinter')
+    except ImportError:
+        print("[ComfyUI-DirGir] Attempting to install tkinter")
+        try:
+            import subprocess
+            import platform
+            system = platform.system()
+            if system == 'Darwin':
+                result = subprocess.run(['brew', 'install', 'python-tk'], check=True)
+                if result.returncode != 0:
+                    raise Exception("Brew installation failed, ensure you have brew installed (https://brew.sh/)")
+            elif system == 'Linux':
+                result = subprocess.run(['sudo', 'apt', '-y', 'install', 'python3-tk'], check=True)
+                if result.returncode != 0:
+                    raise Exception("Apt installation failed")
+            else:
+                result = subprocess.run([sys.executable, '-m', 'pip', 'install', 'tk'], check=True)
+                if result.returncode != 0:
+                    raise Exception("Pip installation failed")
+        except Exception as e:
+            print("[ComfyUI-DirGir] Could not install tkinter, try setting TCL_LIBRARY and TK_LIBRARY environment variables to the location of your tcl and tk libraries (https://www.magicsplat.com/tcl-installer/index.html#downloads)")
+            print(e)
+
+
+install_tkinter()
 
 from .dir_picker import DirPicker
 from .dir_loop import LoopyDir
 from .image_nabber import ImageNabber
-import importlib.util
-
-
-def install_tkinter():
-    # Helper function to install the tkinter module if not already installed
-    try:
-        importlib.import_module('tkinter')
-    except ImportError:
-        try:
-            import pip
-            pip.main(['install', 'tk'])
-            # If macOS, attempt to install via brew
-            import platform
-            if platform.system() == 'Darwin':
-                try:
-                    import subprocess
-                    subprocess.run(['brew', 'install', 'python-tk'])
-                except FileNotFoundError:
-                    pass
-            # If Linux, attempt to install via apt
-            elif platform.system() == 'Linux':
-                try:
-                    import subprocess
-                    subprocess.run(['apt', 'install', 'python3-tk'])
-                except FileNotFoundError:
-                    pass
-        except:
-            print("Could not install tkinter")
-
-
-install_tkinter()
 
 WEB_DIRECTORY = "./web"
 
