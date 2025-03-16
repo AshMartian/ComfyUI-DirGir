@@ -82,23 +82,26 @@ class LoopyDir:
             print("[ComfyUI-DirGir] No files found in directory" + directory)
             return (0, 0, "", "", [])
 
-        # Ensure loop_index is within bounds
-        loop_index = loop_indexes.get(id, 0)
+        # Use the provided loop_index if it's within bounds, otherwise use stored index
+        if loop_index >= 0 and loop_index < len(cls.matched_files):
+            current_index = loop_index
+            loop_indexes[id] = loop_index  # Update stored index to match input
+        else:
+            current_index = loop_indexes.get(id, 0)
+            if current_index >= len(cls.matched_files):
+                current_index = 0
+                loop_indexes[id] = 0
 
-        if loop_index >= len(cls.matched_files):
-            # If the external loop index is beyond the available files, reset to 0
-            loop_indexes[id] = 0
-
-        # Serve the file at the current loop index
-        current_file = cls.matched_files[loop_index]
+        # Serve the file at the current index
+        current_file = cls.matched_files[current_index]
 
         # Prepare outputs
-        output = (len(cls.matched_files), loop_index, current_file,
+        output = (len(cls.matched_files), current_index, current_file,
                   os.path.join(directory, current_file), cls.matched_files)
 
         # Only increment if not paused
         if not pause_loop:
-            loop_indexes[id] = (loop_index + 1) % len(cls.matched_files)
+            loop_indexes[id] = (current_index + 1) % len(cls.matched_files)
 
         return output
 
