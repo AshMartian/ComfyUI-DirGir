@@ -53,6 +53,8 @@ class LoopyDir:
                 "sort_order": (["asc", "desc", "random"], {"default": "asc"}),
                 # External loop index
                 "loop_index": ("INT", {"default": 0}),
+                # Pause looping
+                "pause_loop": ("BOOLEAN", {"default": False}),
             },
             "hidden": {
                 "prompt": "PROMPT",
@@ -70,7 +72,7 @@ class LoopyDir:
     FUNCTION = "iterate_directory"
     CATEGORY = "Dir Gir"
 
-    def iterate_directory(cls, directory, filter_type, filter_value, sort_by, sort_order, loop_index, prompt, id):
+    def iterate_directory(cls, directory, filter_type, filter_value, sort_by, sort_order, loop_index, pause_loop, prompt, id):
         # Load or refresh the list of matched files
         cls.matched_files = filter_files(directory, filter_type, filter_value, sort_by, sort_order)
 
@@ -94,8 +96,9 @@ class LoopyDir:
         output = (len(cls.matched_files), loop_index, current_file,
                   os.path.join(directory, current_file), cls.matched_files)
 
-        # Increment the external loop index or reset if at the end
-        loop_indexes[id] = (loop_index + 1) % len(cls.matched_files)
+        # Only increment if not paused
+        if not pause_loop:
+            loop_indexes[id] = (loop_index + 1) % len(cls.matched_files)
 
         return output
 
