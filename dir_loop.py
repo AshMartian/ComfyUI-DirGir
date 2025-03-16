@@ -36,7 +36,6 @@ loop_indexes = {}
 class LoopyDir:
     # Increment this index each time a file is served, reset when reaching the end or on specific conditions
     file_index = 0
-    matched_files = []
 
     @classmethod
     def INPUT_TYPES(cls):
@@ -73,35 +72,35 @@ class LoopyDir:
     CATEGORY = "Dir Gir"
 
     def iterate_directory(cls, directory, filter_type, filter_value, sort_by, sort_order, loop_index, pause_loop, prompt, id):
-        # Load or refresh the list of matched files
-        cls.matched_files = filter_files(directory, filter_type, filter_value, sort_by, sort_order)
+        # Always refresh the list of matched files to catch any new files
+        matched_files = filter_files(directory, filter_type, filter_value, sort_by, sort_order)
 
-        if len(cls.matched_files) == 0:
+        if len(matched_files) == 0:
             # No files found, reset index
             loop_indexes[id] = 0
             print("[ComfyUI-DirGir] No files found in directory" + directory)
             return (0, 0, "", "", [])
 
         # Use the provided loop_index if it's within bounds, otherwise use stored index
-        if loop_index >= 0 and loop_index < len(cls.matched_files):
+        if loop_index >= 0 and loop_index < len(matched_files):
             current_index = loop_index
             loop_indexes[id] = loop_index  # Update stored index to match input
         else:
             current_index = loop_indexes.get(id, 0)
-            if current_index >= len(cls.matched_files):
+            if current_index >= len(matched_files):
                 current_index = 0
                 loop_indexes[id] = 0
 
         # Serve the file at the current index
-        current_file = cls.matched_files[current_index]
+        current_file = matched_files[current_index]
 
         # Prepare outputs
-        output = (len(cls.matched_files), current_index, current_file,
-                  os.path.join(directory, current_file), cls.matched_files)
+        output = (len(matched_files), current_index, current_file,
+                  os.path.join(directory, current_file), matched_files)
 
         # Only increment if not paused
         if not pause_loop:
-            loop_indexes[id] = (current_index + 1) % len(cls.matched_files)
+            loop_indexes[id] = (current_index + 1) % len(matched_files)
 
         return output
 
